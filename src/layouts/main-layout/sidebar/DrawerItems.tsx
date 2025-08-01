@@ -3,13 +3,11 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
 import ListItem from './list-items/ListItem';
 import CollapseListItem from './list-items/CollapseListItem';
 import Image from 'components/base/Image';
-import IconifyIcon from 'components/base/IconifyIcon';
 import LogoImg from 'assets/images/logo.png';
 import sitemap from 'routes/sitemap';
 
@@ -65,12 +63,6 @@ const DrawerItems = () => {
           ),
         )}
       </List>
-
-      <Box mt="auto" px={3} pb={6}>
-        <Button variant="text" startIcon={<IconifyIcon icon="ic:baseline-logout" />}>
-          Log Out
-        </Button>
-      </Box>
     </>
   );
 };

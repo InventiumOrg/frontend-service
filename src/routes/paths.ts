@@ -13,8 +13,7 @@ export default {
   payouts: `/${rootPaths.pageRoot}/payouts`,
   settings: `/${rootPaths.pageRoot}/settings`,
 
-  signin: `/${rootPaths.authRoot}/signin`,
-  signup: `/${rootPaths.authRoot}/signup`,
-  forgotPassword: `/${rootPaths.authRoot}/forgot-password`,
+  signin: `https://ace-louse-42.accounts.dev/sign-in`,
+  signup: `https://ace-louse-42.accounts.dev/sign-up`,
   404: `/${rootPaths.errorRoot}/404`,
 };

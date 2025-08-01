@@ -29,31 +29,26 @@ const sitemap: MenuItem[] = [
   },
   {
     id: 'activity',
-    subheader: 'Activity',
+    subheader: 'Revenue',
     path: '#!',
     icon: 'ic:baseline-show-chart',
   },
   {
     id: 'library',
-    subheader: 'Library',
+    subheader: 'Inventory',
     path: '#!',
     icon: 'material-symbols:local-library-outline',
   },
   {
-    id: 'authentication',
-    subheader: 'Authentication',
+    id: 'user',
+    subheader: 'User Management',
     icon: 'ic:round-security',
     active: true,
     items: [
       {
-        name: 'Sign In',
+        name: 'User',
         pathName: 'signin',
         path: paths.signin,
-      },
-      {
-        name: 'Sign Up',
-        pathName: 'signup',
-        path: paths.signup,
       },
     ],
   },

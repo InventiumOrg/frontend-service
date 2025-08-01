@@ -8,9 +8,10 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconifyIcon from 'components/base/IconifyIcon';
 import LanguageSelect from './LanguageSelect';
-import ProfileMenu from './ProfileMenu';
+// import ProfileMenu from './ProfileMenu';
 import Image from 'components/base/Image';
 import LogoImg from 'assets/images/logo.png';
+import { SignedIn, UserButton } from '@clerk/clerk-react';
 
 interface TopbarProps {
   isClosing: boolean;
@@ -82,7 +83,10 @@ const Topbar = ({ isClosing, mobileOpen, setMobileOpen }: TopbarProps) => {
             <IconifyIcon icon="ic:outline-notifications-none" />
           </Badge>
         </IconButton>
-        <ProfileMenu />
+        {/* <ProfileMenu /> */}
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </Stack>
     </Stack>
   );

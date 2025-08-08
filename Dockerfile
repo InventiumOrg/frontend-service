@@ -28,8 +28,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/tsconfig*.json ./
 COPY --from=builder /app/vite.config.ts ./
-# Expose port 5173
-EXPOSE 5173
+COPY --from=builder /app/.prettierignore ./
+COPY --from=builder /app/.prettierrc.cjs ./
+COPY --from=builder /app/.eslintrc.cjs ./
+# Expose port 3000
+EXPOSE 3000
 
 # Start the app with serve
 CMD ["npm", "start"]

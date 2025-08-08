@@ -6,7 +6,7 @@ import MainLayout from 'layouts/main-layout';
 import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
 import AuthLayout from 'layouts/auth-layout';
-import { useAuth } from '@clerk/clerk-react';
+import { useAuth, useClerk } from '@clerk/clerk-react';
 
 const App = lazy(() => import('App'));
 const Dashboard = lazy(() => import('pages/dashboard/Dashbaord'));
@@ -16,13 +16,13 @@ const Signup = lazy(() => import('pages/authentication/Signup'));
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isSignedIn, isLoaded } = useAuth();
-
+  const clerk = useClerk();
   if (!isLoaded) {
     return <PageLoader />;
   }
 
   if (!isSignedIn) {
-    window.location.href = paths.signin;
+    clerk.redirectToSignIn();
     return null;
   }
 

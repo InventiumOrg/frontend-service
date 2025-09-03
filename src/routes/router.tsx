@@ -9,9 +9,11 @@ import AuthLayout from 'layouts/auth-layout';
 import { useAuth, useClerk } from '@clerk/clerk-react';
 
 const App = lazy(() => import('App'));
-const Dashboard = lazy(() => import('pages/dashboard/Dashbaord'));
+const Dashboard = lazy(() => import('pages/dashboard/Dashboard'));
 const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
+const Inventory = lazy(() => import('pages/inventory/Main'));
+const CreateInventory = lazy(() => import('pages/inventory/Create'));
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -67,7 +69,17 @@ const router = createBrowserRouter(
           children: [
             {
               index: true,
-              element: <Dashboard />,
+              element: <Dashboard />
+            },
+            {
+              path: "/inventory/explore",
+              index: true,
+              element: <Inventory />
+            },
+            {
+              path: "/inventory/create",
+              index: true,
+              element: <CreateInventory />
             },
           ],
         },

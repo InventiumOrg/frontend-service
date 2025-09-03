@@ -1,6 +1,6 @@
 export const rootPaths = {
   root: '/',
-  pageRoot: 'pages',
+  pageRoot: '',
   authRoot: 'auth',
   errorRoot: 'error',
 };
@@ -8,7 +8,9 @@ export const rootPaths = {
 export default {
   dashboard: `/${rootPaths.pageRoot}/dashboard`,
   activity: `/${rootPaths.pageRoot}/activity`,
-  library: `/${rootPaths.pageRoot}/library`,
+  inventory: `${rootPaths.pageRoot}/inventory`,
+  inventoryExplore: `${rootPaths.pageRoot}/inventory/explore`,
+  inventoryCreate: `${rootPaths.pageRoot}/inventory/create`,
   schedules: `/${rootPaths.pageRoot}/schedules`,
   payouts: `/${rootPaths.pageRoot}/payouts`,
   settings: `/${rootPaths.pageRoot}/settings`,

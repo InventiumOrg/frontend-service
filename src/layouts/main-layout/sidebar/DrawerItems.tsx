@@ -1,19 +1,37 @@
 import { fontFamily } from 'theme/typography';
+import { useLocation } from 'react-router-dom';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import ButtonBase from '@mui/material/ButtonBase';
 import Typography from '@mui/material/Typography';
 import ListItem from './list-items/ListItem';
 import CollapseListItem from './list-items/CollapseListItem';
 import Image from 'components/base/Image';
-import IconifyIcon from 'components/base/IconifyIcon';
 import LogoImg from 'assets/images/logo.png';
-import sitemap from 'routes/sitemap';
+import sitemap, { type SubMenuItem } from 'routes/sitemap';
 
 const DrawerItems = () => {
+  const location = useLocation();
+
+  const isActive = (path?: string) => {
+    if (!path || path === '#!') return false;
+    
+    // Handle root path
+    if (path === '/' && location.pathname === '/') return true;
+    
+    // Handle other paths
+    if (path !== '/' && location.pathname.startsWith(path)) return true;
+    
+    return false;
+  };
+
+  const hasActiveChild = (items?: SubMenuItem[]) => {
+    if (!items) return false;
+    return items.some(item => isActive(item.path));
+  };
+
   return (
     <>
       <Stack
@@ -57,20 +75,29 @@ const DrawerItems = () => {
       </Stack>
 
       <List component="nav" sx={{ mt: 2.5, mb: 10, px: 4.5 }}>
-        {sitemap.map((route) =>
-          route.items ? (
-            <CollapseListItem key={route.id} {...route} />
-          ) : (
-            <ListItem key={route.id} {...route} />
-          ),
-        )}
+        {sitemap.map((route) => {
+          if (route.items) {
+            // For collapsible items, add active states to nested items
+            const itemsWithActive = route.items.map(item => ({
+              ...item,
+              active: isActive(item.path)
+            }));
+            
+            return (
+              <CollapseListItem 
+                key={route.id} 
+                {...route} 
+                items={itemsWithActive}
+                active={hasActiveChild(route.items)} 
+              />
+            );
+          } else {
+            return (
+              <ListItem key={route.id} {...route} active={isActive(route.path)} />
+            );
+          }
+        })}
       </List>
-
-      <Box mt="auto" px={3} pb={6}>
-        <Button variant="text" startIcon={<IconifyIcon icon="ic:baseline-logout" />}>
-          Log Out
-        </Button>
-      </Box>
     </>
   );
 };

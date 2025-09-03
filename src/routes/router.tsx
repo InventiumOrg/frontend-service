@@ -1,16 +1,50 @@
 /* eslint-disable react-refresh/only-export-components */
 import paths, { rootPaths } from './paths';
 import { Suspense, lazy } from 'react';
-import { Outlet, createBrowserRouter } from 'react-router-dom';
+import { Outlet, createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from 'layouts/main-layout';
 import Splash from 'components/loader/Splash';
 import PageLoader from 'components/loader/PageLoader';
 import AuthLayout from 'layouts/auth-layout';
+import { useAuth, useClerk } from '@clerk/clerk-react';
 
 const App = lazy(() => import('App'));
-const Dashboard = lazy(() => import('pages/dashboard/Dashbaord'));
+const Dashboard = lazy(() => import('pages/dashboard/Dashboard'));
 const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
+const Inventory = lazy(() => import('pages/inventory/Main'));
+const CreateInventory = lazy(() => import('pages/inventory/Create'));
+
+// Protected Route wrapper component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isSignedIn, isLoaded } = useAuth();
+  const clerk = useClerk();
+  if (!isLoaded) {
+    return <PageLoader />;
+  }
+
+  if (!isSignedIn) {
+    clerk.redirectToSignIn();
+    return null;
+  }
+
+  return <>{children}</>;
+};
+
+// Public Route wrapper component (for auth pages)
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isSignedIn, isLoaded } = useAuth();
+
+  if (!isLoaded) {
+    return <PageLoader />;
+  }
+
+  if (isSignedIn) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 const router = createBrowserRouter(
   [
@@ -24,25 +58,39 @@ const router = createBrowserRouter(
         {
           path: '/',
           element: (
-            <MainLayout>
-              <Suspense fallback={<PageLoader />}>
-                <Outlet />
-              </Suspense>
-            </MainLayout>
+            <ProtectedRoute>
+              <MainLayout>
+                <Suspense fallback={<PageLoader />}>
+                  <Outlet />
+                </Suspense>
+              </MainLayout>
+            </ProtectedRoute>
           ),
           children: [
             {
               index: true,
-              element: <Dashboard />,
+              element: <Dashboard />
+            },
+            {
+              path: "/inventory/explore",
+              index: true,
+              element: <Inventory />
+            },
+            {
+              path: "/inventory/create",
+              index: true,
+              element: <CreateInventory />
             },
           ],
         },
         {
           path: rootPaths.authRoot,
           element: (
-            <AuthLayout>
-              <Outlet />
-            </AuthLayout>
+            <PublicRoute>
+              <AuthLayout>
+                <Outlet />
+              </AuthLayout>
+            </PublicRoute>
           ),
           children: [
             {
@@ -59,7 +107,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/venus',
+    basename: '/inventium',
   },
 );
 

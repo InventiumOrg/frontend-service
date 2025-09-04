@@ -1,5 +1,5 @@
 import paths from 'routes/paths';
-// import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+
 export interface SubMenuItem {
   name: string;
   pathName: string;
@@ -25,47 +25,37 @@ const sitemap: MenuItem[] = [
     subheader: 'Dashboard',
     path: '/',
     icon: 'ri:dashboard-fill',
+    active: true,
   },
   {
     id: 'activity',
-    subheader: 'Revenue',
+    subheader: 'Activity',
     path: '#!',
     icon: 'ic:baseline-show-chart',
   },
   {
     id: 'library',
-    subheader: 'Inventory',
-    icon: 'material-symbols:inventory-2-outline',
-    items: [
-      {
-        name: 'Explore',
-        pathName: 'inventory-explore',
-        path: paths.inventoryExplore,
-      },
-      {
-        name: 'Create',
-        pathName: 'inventory-create',
-        path: paths.inventoryCreate,
-      },
-    ],
+    subheader: 'Library',
+    path: '#!',
+    icon: 'material-symbols:local-library-outline',
   },
   {
-    id: 'user',
-    subheader: 'User Management',
+    id: 'authentication',
+    subheader: 'Authentication',
     icon: 'ic:round-security',
+    active: true,
     items: [
       {
-        name: 'User',
+        name: 'Sign In',
         pathName: 'signin',
         path: paths.signin,
       },
+      {
+        name: 'Sign Up',
+        pathName: 'signup',
+        path: paths.signup,
+      },
     ],
-  },
-  {
-    id: 'schedules',
-    subheader: 'Transactions',
-    path: '#!',
-    icon: 'material-symbols-light:history',
   },
   {
     id: 'schedules',
@@ -78,12 +68,6 @@ const sitemap: MenuItem[] = [
     subheader: 'Payouts',
     path: '#!',
     icon: 'material-symbols:account-balance-wallet-outline',
-  },
-  {
-    id: 'payouts',
-    subheader: 'Point of Sales',
-    path: '#!',
-    icon: 'mdi:printer-point-of-sale-outline',
   },
   {
     id: 'settings',

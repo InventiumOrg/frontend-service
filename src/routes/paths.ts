@@ -1,6 +1,6 @@
 export const rootPaths = {
   root: '/',
-  pageRoot: '',
+  pageRoot: 'pages',
   authRoot: 'auth',
   errorRoot: 'error',
 };
@@ -8,14 +8,13 @@ export const rootPaths = {
 export default {
   dashboard: `/${rootPaths.pageRoot}/dashboard`,
   activity: `/${rootPaths.pageRoot}/activity`,
-  inventory: `${rootPaths.pageRoot}/inventory`,
-  inventoryExplore: `${rootPaths.pageRoot}/inventory/explore`,
-  inventoryCreate: `${rootPaths.pageRoot}/inventory/create`,
+  library: `/${rootPaths.pageRoot}/library`,
   schedules: `/${rootPaths.pageRoot}/schedules`,
   payouts: `/${rootPaths.pageRoot}/payouts`,
   settings: `/${rootPaths.pageRoot}/settings`,
 
-  signin: `https://ace-louse-42.accounts.dev/sign-in`,
-  signup: `https://ace-louse-42.accounts.dev/sign-up`,
+  signin: `/${rootPaths.authRoot}/signin`,
+  signup: `/${rootPaths.authRoot}/signup`,
+  forgotPassword: `/${rootPaths.authRoot}/forgot-password`,
   404: `/${rootPaths.errorRoot}/404`,
 };

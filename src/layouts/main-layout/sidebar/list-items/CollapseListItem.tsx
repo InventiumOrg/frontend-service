@@ -11,6 +11,7 @@ import IconifyIcon from 'components/base/IconifyIcon';
 
 const CollapseListItem = ({ subheader, active, items, icon }: MenuItem) => {
   const [open, setOpen] = useState(false);
+
   const handleClick = () => {
     setOpen(!open);
   };

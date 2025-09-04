@@ -13,7 +13,6 @@ const Dashboard = lazy(() => import('pages/dashboard/Dashboard'));
 const Signin = lazy(() => import('pages/authentication/Signin'));
 const Signup = lazy(() => import('pages/authentication/Signup'));
 const Inventory = lazy(() => import('pages/inventory/Main'));
-const CreateInventory = lazy(() => import('pages/inventory/Create'));
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -75,11 +74,6 @@ const router = createBrowserRouter(
               path: "/inventory/explore",
               index: true,
               element: <Inventory />
-            },
-            {
-              path: "/inventory/create",
-              index: true,
-              element: <CreateInventory />
             },
           ],
         },

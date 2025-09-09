@@ -1,7 +1,7 @@
 {
-  "name": "venus",
+  "name": "inventium",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,8 +12,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.46.0",
+    "@clerk/nextjs": "^6.31.9",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "5.15.20",
     "@mui/material": "^5.15.20",
     "@mui/x-data-grid": "^7.13.0",
     "echarts": "^5.5.1",

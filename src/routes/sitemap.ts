@@ -35,13 +35,24 @@ const sitemap: MenuItem[] = [
   },
   {
     id: 'library',
-    subheader: 'Library',
-    path: '#!',
-    icon: 'material-symbols:local-library-outline',
+    subheader: 'Inventory',
+    icon: 'material-symbols:inventory-2-outline',
+    items: [
+      {
+        name: 'Explore',
+        pathName: 'inventory-explore',
+        path: paths.inventoryExplore,
+      },
+      {
+        name: 'Catelogue',
+        pathName: 'inventory-catelouge',
+        path: paths.inventoryCatelogue,
+      },
+    ],
   },
   {
-    id: 'authentication',
-    subheader: 'Authentication',
+    id: 'user',
+    subheader: 'User Management',
     icon: 'ic:round-security',
     active: true,
     items: [

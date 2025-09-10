@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import paths, { rootPaths } from "./paths";
+import { rootPaths } from "./paths";
 import { Suspense, lazy } from "react";
 import { Outlet, createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "layouts/main-layout";
@@ -10,8 +10,6 @@ import { useAuth, useClerk } from "@clerk/clerk-react";
 
 const App = lazy(() => import("App"));
 const Dashboard = lazy(() => import("pages/dashboard/Dashboard"));
-const Signin = lazy(() => import("pages/authentication/Signin"));
-const Signup = lazy(() => import("pages/authentication/Signup"));
 const Inventory = lazy(() => import("pages/inventory/Main"));
 const Catelogue = lazy(() => import("pages/inventory/Catelogue"));
 
@@ -59,9 +57,11 @@ const router = createBrowserRouter(
           path: "/",
           element: (
             <MainLayout>
-              <Suspense fallback={<PageLoader />}>
-                <Outlet />
-              </Suspense>
+              <ProtectedRoute>
+                <Suspense fallback={<PageLoader />}>
+                  <Outlet />
+                </Suspense>
+              </ProtectedRoute>
             </MainLayout>
           ),
           children: [
@@ -84,20 +84,12 @@ const router = createBrowserRouter(
         {
           path: rootPaths.authRoot,
           element: (
-            <AuthLayout>
-              <Outlet />
-            </AuthLayout>
+            <PublicRoute>
+              <AuthLayout>
+                <Outlet />
+              </AuthLayout>
+            </PublicRoute>
           ),
-          children: [
-            {
-              path: paths.signin,
-              element: <Signin />,
-            },
-            {
-              path: paths.signup,
-              element: <Signup />,
-            },
-          ],
         },
       ],
     },

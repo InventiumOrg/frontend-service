@@ -5,8 +5,7 @@ import DataGridFooter from "components/common/DataGridFooter";
 // import <RowsProps></RowsProps> from "data/inventoryList";
 import { Typography } from "@mui/material";
 import ActionMenu from "./ActionMenu";
-import ListInventory from "utils/hooks/fetchInventory";
-// import { useAuth } from "@clerk/nextjs";
+import { useAuthenticatedFetch } from "utils/hooks/useAuthenticatedFetch";
 
 interface InventoryRow {
   ID: number | string;
@@ -127,8 +126,8 @@ const InventoryTable = ({ searchText }: TaskOverviewTableProps) => {
   const apiRef = useGridApiRef<GridApi>();
   const [inventories, setInventories] = useState<InventoryRow[]>([]);
   const inventoryService = import.meta.env.VITE_INVENTORY_SERVICE || "localhost:13740";
-  const logLevel: string = import.meta.env.VITE_LOG_LEVEL
-  // const { getToken } = useAuth();
+  const logLevel: string = import.meta.env.VITE_LOG_LEVEL;
+  const { authenticatedFetch, isSignedIn } = useAuthenticatedFetch();
 
   const normalizeInventoryItem = (item: ApiInventoryItem): InventoryRow => ({
     ID: item.ID,
@@ -143,18 +142,16 @@ const InventoryTable = ({ searchText }: TaskOverviewTableProps) => {
   useEffect(() => {
     const fetchInventories = async () => {
       try {
-        // Get token from environment or use auth
-        const token = import.meta.env.VITE_AUTH_TOKEN;
-        if (!token) {
-          console.log("No auth token available in environment");
+        // Check if user is signed in
+        if (!isSignedIn) {
+          console.log("User not signed in");
           return;
         }
 
-        const response = await ListInventory(inventoryService, token);
+        // Use authenticated fetch with Clerk session token
+        const response = await authenticatedFetch(`http://${inventoryService}/v1/inventory/list`);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+
 
         const responseData: ApiResponse | ApiInventoryItem[] = await response.json();
         if (logLevel === "DEBUG") {
@@ -182,7 +179,7 @@ const InventoryTable = ({ searchText }: TaskOverviewTableProps) => {
     };
 
     fetchInventories();
-  }, [])
+  }, [isSignedIn, authenticatedFetch])
   useEffect(() => {
     apiRef.current.setQuickFilterValues(searchText.split(/\b\W+\b/).filter((word) => word !== ""));
   }, [searchText]);

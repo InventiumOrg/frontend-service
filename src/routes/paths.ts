@@ -8,9 +8,9 @@ export const rootPaths = {
 export default {
   dashboard: `/${rootPaths.pageRoot}/dashboard`,
   activity: `/${rootPaths.pageRoot}/activity`,
-  inventory: `${rootPaths.pageRoot}/inventory`,
-  inventoryExplore: `${rootPaths.pageRoot}/inventory/explore`,
-  inventoryCatelogue: `${rootPaths.pageRoot}/inventory/catelogue`,
+  inventory: `${rootPaths}/inventory`,
+  inventoryExplore: `inventory/explore`,
+  inventoryCatelogue: `inventory/catelogue`,
   schedules: `/${rootPaths.pageRoot}/schedules`,
   payouts: `/${rootPaths.pageRoot}/payouts`,
   settings: `/${rootPaths.pageRoot}/settings`,

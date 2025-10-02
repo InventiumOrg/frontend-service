@@ -11,6 +11,8 @@ export default {
   inventory: `${rootPaths}/inventory`,
   inventoryExplore: `/inventory/explore`,
   inventoryCatelogue: `/inventory/catelogue`,
+  inventoryImport: `/inventory/import`,
+  inventoryExport: `/inventory/export`,
   schedules: `/${rootPaths.pageRoot}/schedules`,
   payouts: `/${rootPaths.pageRoot}/payouts`,
   settings: `/${rootPaths.pageRoot}/settings`,

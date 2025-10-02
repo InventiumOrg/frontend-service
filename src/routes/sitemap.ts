@@ -25,14 +25,13 @@ const sitemap: MenuItem[] = [
     subheader: 'Dashboard',
     path: '/',
     icon: 'ri:dashboard-fill',
-    active: true,
   },
-  {
-    id: 'activity',
-    subheader: 'Activity',
-    path: '#!',
-    icon: 'ic:baseline-show-chart',
-  },
+  // {
+  //   id: 'activity',
+  //   subheader: 'Activity',
+  //   path: '#!',
+  //   icon: 'ic:baseline-show-chart',
+  // },
   {
     id: 'library',
     subheader: 'Inventory',
@@ -48,44 +47,72 @@ const sitemap: MenuItem[] = [
         pathName: 'inventory-catelouge',
         path: paths.inventoryCatelogue,
       },
-    ],
-  },
-  {
-    id: 'user',
-    subheader: 'User Management',
-    icon: 'ic:round-security',
-    active: true,
-    items: [
       {
-        name: 'Sign In',
-        pathName: 'signin',
-        path: paths.signin,
+        name: 'Import',
+        pathName: 'inventory-import',
+        path: paths.inventoryImport,
       },
       {
-        name: 'Sign Up',
-        pathName: 'signup',
-        path: paths.signup,
+        name: 'Export',
+        pathName: 'inventory-export',
+        path: paths.inventoryExport,
       },
     ],
   },
   {
-    id: 'schedules',
-    subheader: 'Schedules',
+    id: 'warehouse',
+    subheader: 'Warehouse',
     path: '#!',
-    icon: 'ic:outline-calendar-today',
+    icon: 'material-symbols:warehouse-outline',
   },
   {
-    id: 'payouts',
-    subheader: 'Payouts',
+    id: 'pos',
+    subheader: 'POS',
     path: '#!',
-    icon: 'material-symbols:account-balance-wallet-outline',
+    icon: 'material-symbols:sell-outline',
   },
   {
-    id: 'settings',
-    subheader: 'Settings',
+    id: 'revenue',
+    subheader: 'Revenue',
     path: '#!',
-    icon: 'ic:outline-settings',
-  },
+    icon: 'material-symbols:bar-chart-4-bars',
+  }
+
+  // {
+  //   id: 'user',
+  //   subheader: 'User Management',
+  //   icon: 'ic:round-security',
+  //   items: [
+  //     {
+  //       name: 'Sign In',
+  //       pathName: 'signin',
+  //       path: paths.signin,
+  //     },
+  //     {
+  //       name: 'Sign Up',
+  //       pathName: 'signup',
+  //       path: paths.signup,
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 'schedules',
+  //   subheader: 'Schedules',
+  //   path: '#!',
+  //   icon: 'ic:outline-calendar-today',
+  // },
+  // {
+  //   id: 'payouts',
+  //   subheader: 'Payouts',
+  //   path: '#!',
+  //   icon: 'material-symbols:account-balance-wallet-outline',
+  // },
+  // {
+  //   id: 'settings',
+  //   subheader: 'Settings',
+  //   path: '#!',
+  //   icon: 'ic:outline-settings',
+  // },
 ];
 
 export default sitemap;

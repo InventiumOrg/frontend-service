@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   BoxCubeIcon,
+  BoxIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
@@ -42,7 +43,11 @@ const navItems: NavItem[] = [
     name: "User Profile",
     path: "/profile",
   },
-
+  {
+    icon: <BoxIcon />,
+    name: "Inventory",
+    path: "/inventory",
+  },
   {
     name: "Forms",
     icon: <ListIcon />,

@@ -4,6 +4,7 @@ import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
+import DevTools from "@/components/DevTools";
 import React from "react";
 
 export default function AdminLayout({
@@ -22,6 +23,9 @@ export default function AdminLayout({
 
   return (
     <div className="min-h-screen xl:flex">
+      {/* Development Tools */}
+      <DevTools />
+      
       {/* Sidebar and Backdrop */}
       <AppSidebar />
       <Backdrop />

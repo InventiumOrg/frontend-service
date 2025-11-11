@@ -87,15 +87,15 @@ Your backend API should provide the following endpoints:
 - Get a single inventory item by ID
 - Returns: Single InventoryItem object
 
-**POST /inventory**
+**POST /inventory/create**
 - Create a new inventory item
-- Request body: InventoryItem (without id)
-- Returns: Created InventoryItem with generated ID
+- Request format: Form data with fields: Name, Unit, Quantity, Measure, Category, Location
+- Returns: `{ message: "Create Inventory Successfully", data: {...} }`
 
 **PUT /inventory/:id**
 - Update an existing inventory item
-- Request body: Partial InventoryItem (only fields to update)
-- Returns: Updated InventoryItem
+- Request format: Form data with fields: Name, Unit, Quantity, Measure, Category, Location
+- Returns: `{ message: "Update Inventory Successfully", data: {...} }`
 
 **DELETE /inventory/:id**
 - Delete an inventory item by ID
@@ -383,8 +383,8 @@ Based on your environment setup, the system is configured as follows:
 - **Base URL**: `http://localhost:13740/v1`
 - **List Inventory**: `GET /inventory/list`
 - **Get Item**: `GET /inventory/:id`
-- **Create Item**: `POST /inventory`
-- **Update Item**: `PUT /inventory/:id`
+- **Create Item**: `POST /inventory/create` (Form data)
+- **Update Item**: `PUT /inventory/:id` (Form data)
 - **Delete Item**: `DELETE /inventory/:id`
 
 ### Authentication

@@ -1,22 +1,6 @@
-import { cookies } from 'next/headers';
 import { api } from './api';
-import { InventoryItem, InventoryFilters, InventoryApiResponse, ITEMS_PER_PAGE, getInventoryItemsFallback } from './inventory';
-
-// Get server-side auth token from cookies or environment
-async function getServerAuthToken(): Promise<string | null> {
-  try {
-    // First try to get from cookies
-    const cookieStore = await cookies();
-    const cookieToken = cookieStore.get('auth_token')?.value;
-    if (cookieToken) return cookieToken;
-    
-    // Fallback to environment variable for development
-    return process.env.NEXT_AUTH_TOKEN || process.env.NEXT_PUBLIC_AUTH_TOKEN || null;
-  } catch {
-    // If cookies fail, try environment variable
-    return process.env.NEXT_AUTH_TOKEN || process.env.NEXT_PUBLIC_AUTH_TOKEN || null;
-  }
-}
+import { InventoryItem, InventoryFilters, InventoryApiResponse, ITEMS_PER_PAGE } from './inventory';
+import { getServerAuthToken } from './auth-server';
 
 // Server-side API function to fetch inventory items
 export async function fetchInventoryItemsServer(filters: InventoryFilters = {}): Promise<{
@@ -36,20 +20,22 @@ export async function fetchInventoryItemsServer(filters: InventoryFilters = {}):
     // Get auth token for server-side requests
     const serverToken = await getServerAuthToken();
     
-    // Build query parameters
+
+    
+    // Build query parameters (only add if needed)
     const params = new URLSearchParams();
     if (search) params.append('search', search);
     if (status && status !== 'All') params.append('status', status);
-    params.append('page', page.toString());
-    params.append('limit', limit.toString());
+    // Only add pagination if not default values
+    if (page > 1) params.append('page', page.toString());
+    if (limit !== ITEMS_PER_PAGE) params.append('limit', limit.toString());
 
     const queryString = params.toString();
     const endpoint = `/inventory/list${queryString ? `?${queryString}` : ''}`;
     
     const response = await api.get<any>(endpoint, {}, serverToken || undefined);
     
-    // Log the actual response to understand the structure
-    console.log('API Response:', JSON.stringify(response, null, 2));
+
     
     // Handle different response formats
     let items: InventoryItem[] = [];
@@ -126,8 +112,17 @@ export async function fetchInventoryItemsServer(filters: InventoryFilters = {}):
   } catch (error) {
     console.error('Failed to fetch inventory items:', error);
     
-    // Fallback to sample data for development
-    return getInventoryItemsFallback(filters);
+    // Check if it's an authentication error
+    if (error instanceof Error && error.message.includes('Invalid or expired token')) {
+      throw new Error('Authentication failed: JWT token is expired or invalid. Please check your token configuration.');
+    }
+    
+    // Throw error instead of using fallback data
+    throw new Error(
+      error instanceof Error 
+        ? `Inventory service error: ${error.message}` 
+        : 'Failed to connect to inventory service'
+    );
   }
 }
 
@@ -135,7 +130,14 @@ export async function fetchInventoryItemsServer(filters: InventoryFilters = {}):
 export async function fetchInventoryItemServer(id: number): Promise<InventoryItem> {
   try {
     const serverToken = await getServerAuthToken();
-    return await api.get<InventoryItem>(`/inventory/${id}`, {}, serverToken || undefined);
+    const response = await api.get<any>(`/inventory/${id}`, {}, serverToken || undefined);
+    
+    // Handle the response format: { message: "...", data: {...} }
+    if (response.data) {
+      const { mapBackendItem } = await import('./inventory');
+      return mapBackendItem(response.data);
+    }
+    throw new Error('Invalid response format');
   } catch (error) {
     console.error(`Failed to fetch inventory item ${id}:`, error);
     throw error;

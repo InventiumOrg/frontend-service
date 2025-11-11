@@ -14,7 +14,6 @@ export default function InventoryActions({ itemId }: InventoryActionsProps) {
   const router = useRouter();
 
   const handleEdit = () => {
-    // Navigate to edit page (you can implement this route later)
     router.push(`/inventory/edit/${itemId}`);
   };
 

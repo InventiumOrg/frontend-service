@@ -1,36 +1,60 @@
-// Auth utilities for JWT token management
+// Client-side auth utilities - safe for client components
+
+// Get token from cookies (client-side)
+function getCookieValue(name: string): string | null {
+  if (typeof document === 'undefined') return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) {
+    return parts.pop()?.split(';').shift() || null;
+  }
+  return null;
+}
+
+// Legacy function for backward compatibility - now uses session cookie
 export function getAuthToken(): string | null {
   if (typeof window === 'undefined') {
-    // Server-side: tokens should be handled via cookies in the API functions
+    // Server-side: should use getServerAuthToken instead
+    console.warn('getAuthToken called on server-side. Use getServerAuthToken from auth-server.ts');
     return null;
   }
   
-  // Client-side: get token from localStorage, sessionStorage, or environment fallback
-  return (
-    localStorage.getItem('auth_token') || 
-    sessionStorage.getItem('auth_token') ||
-    process.env.NEXT_PUBLIC_AUTH_TOKEN ||
-    null
-  );
+  // Try to get token from __session cookie (Clerk's default)
+  const sessionToken = getCookieValue('__session');
+  if (sessionToken) {
+    console.log('✅ Using __session cookie token');
+    return sessionToken;
+  }
+  
+  // Fallback to auth_token cookie (legacy)
+  const authToken = getCookieValue('auth_token');
+  if (authToken) {
+    console.log('✅ Using auth_token cookie (legacy)');
+    return authToken;
+  }
+  
+  // Last resort: localStorage (for development/testing)
+  const localToken = localStorage.getItem('auth_token');
+  if (localToken) {
+    console.log('✅ Using localStorage token (development)');
+    return localToken;
+  }
+  
+  console.warn('❌ No authentication token found in cookies or localStorage');
+  return null;
 }
 
+// Deprecated functions - kept for backward compatibility
 export function setAuthToken(token: string): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('auth_token', token);
-    // Also set as httpOnly cookie for server-side access
-    document.cookie = `auth_token=${token}; path=/; secure; samesite=strict`;
-  }
+  console.warn('setAuthToken is deprecated. Clerk handles token management automatically.');
 }
 
 export function removeAuthToken(): void {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('auth_token');
-    sessionStorage.removeItem('auth_token');
-    // Remove cookie
-    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  }
+  console.warn('removeAuthToken is deprecated. Use Clerk signOut instead.');
 }
 
 export function isAuthenticated(): boolean {
+  console.warn('isAuthenticated is deprecated. Use Clerk useAuth hook instead.');
   return !!getAuthToken();
 }

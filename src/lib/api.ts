@@ -1,7 +1,7 @@
 import { getAuthToken } from './auth';
 
 // API configuration
-const API_BASE_URL = process.env.NEXT_INVENTORY_API_BASE_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:13740/v1';
 
 export class ApiError extends Error {
   constructor(
@@ -14,25 +14,38 @@ export class ApiError extends Error {
   }
 }
 
-// Generic API client with JWT authentication
+// Generic API client with Clerk authentication
 export async function apiRequest<T>(
   endpoint: string,
   options: RequestInit = {},
   serverToken?: string
 ): Promise<T> {
-  // Use provided server token or get from client-side storage
+  // Use provided server token or fallback to legacy method
   const token = serverToken || getAuthToken();
   
-  const config: RequestInit = {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-    ...options,
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  // Prepare headers - start with existing headers from options
+  const headers: HeadersInit = {
+    ...(options.headers as Record<string, string> || {}),
   };
 
-  const url = `${API_BASE_URL}${endpoint}`;
+  // Add Authorization header if token exists
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  } else {
+    throw new ApiError('Authorization header required', 401);
+  }
+
+  // Only add Content-Type for JSON requests (not for FormData or if already set)
+  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const config: RequestInit = {
+    headers,
+    ...options,
+  };
   
   try {
     const response = await fetch(url, config);

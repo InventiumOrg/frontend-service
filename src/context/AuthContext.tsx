@@ -1,7 +1,8 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getAuthToken, setAuthToken, removeAuthToken, isAuthenticated } from '@/lib/auth';
+// Note: This AuthContext is deprecated. Use Clerk's useAuth hook instead.
+// Keeping minimal functionality for backward compatibility.
 
 interface User {
   id: number;
@@ -27,8 +28,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.warn('AuthContext is deprecated. Please use Clerk useAuth hook instead.');
     // Initialize auth state from stored token
-    const storedToken = getAuthToken();
+    const storedToken = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
     if (storedToken) {
       setTokenState(storedToken);
       // You might want to validate the token with your API here
@@ -38,13 +40,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = (newToken: string, userData: User) => {
-    setAuthToken(newToken);
+    console.warn('AuthContext login is deprecated. Use Clerk signIn instead.');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('auth_token', newToken);
+    }
     setTokenState(newToken);
     setUser(userData);
   };
 
   const logout = () => {
-    removeAuthToken();
+    console.warn('AuthContext logout is deprecated. Use Clerk signOut instead.');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
     setTokenState(null);
     setUser(null);
   };
@@ -97,7 +105,7 @@ export function withAuth<P extends object>(Component: React.ComponentType<P>) {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Authentication Required</h2>
             <p className="text-gray-600 mb-4">Please log in to access this page.</p>
             <button 
-              onClick={() => window.location.href = '/signin'}
+              onClick={() => window.location.href = '/sign-in'}
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               Go to Login

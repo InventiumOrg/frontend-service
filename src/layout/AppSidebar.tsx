@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   BoxCubeIcon,
-  BoxIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
@@ -16,9 +15,11 @@ import {
   PieChartIcon,
   PlugInIcon,
   TableIcon,
-  UserCircleIcon,
+  SaleIcon,
+  InventoryIcon,
+  ExportIcon,
+  ImportIcon
 } from "../icons/index";
-import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
   name: string;
@@ -31,22 +32,37 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    subItems: [{ name: "Sales", path: "/dashboard", pro: false }],
   },
   {
     icon: <CalenderIcon />,
     name: "Calendar",
     path: "/calendar",
   },
+  // {
+  //   icon: <UserCircleIcon />,
+  //   name: "User Profile",
+  //   path: "/profile",
+  // },
   {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    icon: <BoxIcon />,
+    icon: <InventoryIcon />,
     name: "Inventory",
     path: "/inventory",
+  },
+  {
+    icon: <SaleIcon />,
+    name: "Sale",
+    path: "/sale",
+  },
+  {
+    icon: <ImportIcon />,
+    name: "Import",
+    path: "/import",
+  },
+  {
+    icon: <ExportIcon />,
+    name: "Export",
+    path: "/export",
   },
   {
     name: "Forms",
@@ -93,8 +109,8 @@ const othersItems: NavItem[] = [
     icon: <PlugInIcon />,
     name: "Authentication",
     subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
+      { name: "Sign In", path: "/sign-in", pro: false },
+      { name: "Sign Up", path: "/sign-up", pro: false },
     ],
   },
 ];
@@ -379,7 +395,6 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
     </aside>
   );

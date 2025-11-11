@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api, apiRequest } from './api';
 
 export interface InventoryItem {
   id: number;
@@ -38,89 +38,7 @@ export interface InventoryApiResponse {
   };
 }
 
-// Sample inventory data - fallback for development/testing
-export const sampleInventoryData: InventoryItem[] = [
-  {
-    id: 1,
-    name: "Wireless Bluetooth Headphones",
-    category: "Electronics",
-    quantity: 45,
-    price: 89.99,
-    status: "In Stock",
-    supplier: "TechCorp Ltd",
-    lastUpdated: "2024-11-07",
-  },
-  {
-    id: 2,
-    name: "Gaming Mechanical Keyboard",
-    category: "Electronics",
-    quantity: 8,
-    price: 129.99,
-    status: "Low Stock",
-    supplier: "GameGear Inc",
-    lastUpdated: "2024-11-06",
-  },
-  {
-    id: 3,
-    name: "Ergonomic Office Chair",
-    category: "Furniture",
-    quantity: 0,
-    price: 299.99,
-    status: "Out of Stock",
-    supplier: "ComfortSeating Co",
-    lastUpdated: "2024-11-05",
-  },
-  {
-    id: 4,
-    name: "Stainless Steel Water Bottle",
-    category: "Accessories",
-    quantity: 120,
-    price: 24.99,
-    status: "In Stock",
-    supplier: "EcoBottles Ltd",
-    lastUpdated: "2024-11-07",
-  },
-  {
-    id: 5,
-    name: "Laptop Stand Adjustable",
-    category: "Electronics",
-    quantity: 15,
-    price: 49.99,
-    status: "Low Stock",
-    supplier: "WorkSpace Solutions",
-    lastUpdated: "2024-11-06",
-  },
-  {
-    id: 6,
-    name: "Organic Cotton T-Shirt",
-    category: "Clothing",
-    quantity: 75,
-    price: 19.99,
-    status: "In Stock",
-    supplier: "GreenWear Co",
-    lastUpdated: "2024-11-07",
-  },
-  {
-    id: 7,
-    name: "Smart Fitness Tracker",
-    category: "Electronics",
-    quantity: 3,
-    price: 199.99,
-    status: "Low Stock",
-    supplier: "FitTech Inc",
-    lastUpdated: "2024-11-05",
-  },
-  {
-    id: 8,
-    name: "Ceramic Coffee Mug Set",
-    category: "Kitchen",
-    quantity: 60,
-    price: 34.99,
-    status: "In Stock",
-    supplier: "KitchenCraft Ltd",
-    lastUpdated: "2024-11-07",
-  },
-];
+// Sample inventory data removed - now using proper error handling instead of fallback
 
 export interface InventoryFilters {
   search?: string;
@@ -164,12 +82,13 @@ export async function fetchInventoryItems(filters: InventoryFilters = {}): Promi
   const { search = "", status = "All", page = 1, limit = ITEMS_PER_PAGE } = filters;
 
   try {
-    // Build query parameters
+    // Build query parameters (only add if needed)
     const params = new URLSearchParams();
     if (search) params.append('search', search);
     if (status && status !== 'All') params.append('status', status);
-    params.append('page', page.toString());
-    params.append('limit', limit.toString());
+    // Only add pagination if not default values
+    if (page > 1) params.append('page', page.toString());
+    if (limit !== ITEMS_PER_PAGE) params.append('limit', limit.toString());
 
     const queryString = params.toString();
     const endpoint = `/inventory/list${queryString ? `?${queryString}` : ''}`;
@@ -249,70 +168,124 @@ export async function fetchInventoryItems(filters: InventoryFilters = {}): Promi
   } catch (error) {
     console.error('Failed to fetch inventory items:', error);
     
-    // Fallback to sample data for development
-    return getInventoryItemsFallback(filters);
+    // Throw error instead of using fallback data
+    throw new Error(
+      error instanceof Error 
+        ? `Inventory service error: ${error.message}` 
+        : 'Failed to connect to inventory service'
+    );
   }
 }
 
-// Fallback function using sample data (for development/testing)
-export function getInventoryItemsFallback(filters: InventoryFilters = {}) {
-  const { search = "", status = "All", page = 1 } = filters;
-
-  // Filter data based on search and status
-  let filteredData = sampleInventoryData.filter((item) => {
-    const matchesSearch = 
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.id.toString().includes(search) ||
-      item.category.toLowerCase().includes(search.toLowerCase());
-    
-    const matchesStatus = status === "All" || item.status === status;
-    
-    return matchesSearch && matchesStatus;
-  });
-
-  // Pagination
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-  const startIndex = (page - 1) * ITEMS_PER_PAGE;
-  const paginatedData = filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-  return {
-    items: paginatedData,
-    pagination: {
-      currentPage: page,
-      totalPages,
-      totalItems,
-      itemsPerPage: ITEMS_PER_PAGE,
-      startIndex: startIndex + 1,
-      endIndex: Math.min(startIndex + ITEMS_PER_PAGE, totalItems),
-    },
-  };
-}
+// Fallback function removed - now using proper error handling instead
 
 // Individual item operations (client-side)
 export async function fetchInventoryItem(id: number): Promise<InventoryItem> {
   try {
-    return await api.get<InventoryItem>(`/inventory/${id}`);
+    const response = await api.get<any>(`/inventory/${id}`);
+    // Handle the response format: { message: "...", data: {...} }
+    if (response.data) {
+      return mapBackendItem(response.data);
+    }
+    throw new Error('Invalid response format');
   } catch (error) {
     console.error(`Failed to fetch inventory item ${id}:`, error);
     throw error;
   }
 }
 
-export async function createInventoryItem(item: Omit<InventoryItem, 'id'>): Promise<InventoryItem> {
+export async function createInventoryItem(item: Omit<InventoryItem, 'id' | 'sku'>): Promise<InventoryItem> {
   try {
-    return await api.post<InventoryItem>('/inventory', item);
+    console.log('➕ Creating new inventory item with data:', item);
+    
+    // Validate and prepare data
+    const finalQuantity = item.quantity || 0;
+    if (isNaN(finalQuantity) || finalQuantity < 0) {
+      throw new Error('Quantity must be a valid non-negative number');
+    }
+
+    // Create URLSearchParams for application/x-www-form-urlencoded (like curl --form)
+    const formData = new URLSearchParams();
+    formData.append('Name', item.name || '');
+    formData.append('Unit', item.unit || 'piece');
+    formData.append('Quantity', Math.floor(finalQuantity).toString()); // Ensure integer
+    formData.append('Measure', item.measure || 'unit');
+    formData.append('Category', item.category || '');
+    formData.append('Location', item.location || item.supplier || '');
+
+    // Log form data contents for debugging
+    console.log('📝 Form data contents (all required fields):');
+    for (const [key, value] of formData.entries()) {
+      console.log(`  ${key}: ${value}`);
+    }
+
+    // Use the API client with URLSearchParams body (apiRequest will add Authorization header)
+    const response = await apiRequest<any>(`/inventory/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData.toString(),
+    });
+
+    console.log('✅ Successfully created inventory item:', response);
+
+    if (response.data) {
+      return mapBackendItem(response.data);
+    }
+    throw new Error('Invalid response format');
   } catch (error) {
-    console.error('Failed to create inventory item:', error);
+    console.error('❌ Failed to create inventory item:', error);
     throw error;
   }
 }
 
 export async function updateInventoryItem(id: number, item: Partial<InventoryItem>): Promise<InventoryItem> {
   try {
-    return await api.put<InventoryItem>(`/inventory/${id}`, item);
+    console.log(`🔄 Updating inventory item ${id} with data:`, item);
+    
+    // First, fetch the current item to get all existing values
+    const currentItem = await fetchInventoryItem(id);
+    console.log('📋 Current item data:', currentItem);
+    
+    // Validate and prepare data
+    const finalQuantity = item.quantity !== undefined ? item.quantity : currentItem.quantity;
+    if (isNaN(finalQuantity) || finalQuantity < 0) {
+      throw new Error('Quantity must be a valid non-negative number');
+    }
+
+    // Create URLSearchParams for application/x-www-form-urlencoded (like curl --form)
+    const formData = new URLSearchParams();
+    formData.append('Name', item.name || currentItem.name);
+    formData.append('Unit', item.unit || currentItem.unit || 'piece');
+    formData.append('Quantity', Math.floor(finalQuantity).toString()); // Ensure integer
+    formData.append('Measure', item.measure || currentItem.measure || 'unit');
+    formData.append('Category', item.category || currentItem.category);
+    formData.append('Location', item.location || currentItem.location || '');
+
+    // Log form data contents for debugging
+    console.log('📝 Form data contents (all required fields):');
+    for (const [key, value] of formData.entries()) {
+      console.log(`  ${key}: ${value}`);
+    }
+
+    // Use the API client with URLSearchParams body (apiRequest will add Authorization header)
+    const response = await apiRequest<any>(`/inventory/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: formData.toString(),
+    });
+
+    console.log(`✅ Successfully updated inventory item ${id}:`, response);
+
+    if (response.data) {
+      return mapBackendItem(response.data);
+    }
+    throw new Error('Invalid response format');
   } catch (error) {
-    console.error(`Failed to update inventory item ${id}:`, error);
+    console.error(`❌ Failed to update inventory item ${id}:`, error);
     throw error;
   }
 }

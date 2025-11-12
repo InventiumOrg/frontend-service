@@ -4,8 +4,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import IconifyIcon from 'components/base/IconifyIcon';
+import { useActiveRoute } from 'hooks/useActiveRoute';
 
-const ListItem = ({ subheader, icon, path, active }: MenuItem) => {
+const ListItem = ({ subheader, icon, path, ...item }: MenuItem) => {
+  const { isMenuItemActive } = useActiveRoute();
+  const active = isMenuItemActive(item as MenuItem);
+
   return (
     <ListItemButton
       component={Link}
@@ -13,8 +17,9 @@ const ListItem = ({ subheader, icon, path, active }: MenuItem) => {
       sx={{
         mb: 2.5,
         bgcolor: active ? 'primary.main' : null,
+        borderRadius: 2,
         '&:hover': {
-          bgcolor: active ? 'primary.main' : null,
+          bgcolor: active ? 'primary.main' : 'rgba(67, 24, 255, 0.08)',
         },
       }}
     >
@@ -24,7 +29,7 @@ const ListItem = ({ subheader, icon, path, active }: MenuItem) => {
             icon={icon}
             fontSize="h4.fontSize"
             sx={{
-              color: active ? 'info.light' : null,
+              color: active ? 'white' : 'text.secondary',
             }}
           />
         )}
@@ -33,7 +38,8 @@ const ListItem = ({ subheader, icon, path, active }: MenuItem) => {
         primary={subheader}
         sx={{
           '& .MuiListItemText-primary': {
-            color: active ? 'info.light' : null,
+            color: active ? 'white' : 'text.primary',
+            fontWeight: active ? 600 : 500,
           },
         }}
       />

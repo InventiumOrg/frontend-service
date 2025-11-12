@@ -137,6 +137,7 @@ const CreateInventoryForm = () => {
         <Button
           variant="contained"
           size="medium"
+          type="submit"
         >
           Create
         </Button>

@@ -17,8 +17,7 @@ import {
   TableIcon,
   SaleIcon,
   InventoryIcon,
-  ExportIcon,
-  ImportIcon
+  WarehouseIcon
 } from "../icons/index";
 
 type NavItem = {
@@ -32,13 +31,17 @@ const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Sales", path: "/dashboard", pro: false }],
+    subItems: [
+      { name: "Sales", path: "/dashboard", pro: false },
+      { name: "Inventory", path: "/dashboard/inventory", pro: false },
+      { name: "Revenue", path: "/dashboard/revenue", pro: false }
+    ],
   },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Calendar",
+  //   path: "/calendar",
+  // },
   // {
   //   icon: <UserCircleIcon />,
   //   name: "User Profile",
@@ -47,22 +50,25 @@ const navItems: NavItem[] = [
   {
     icon: <InventoryIcon />,
     name: "Inventory",
-    path: "/inventory",
+    subItems: [
+      { name: "Inventory", path: "/inventory", pro: false },
+      { name: "Import", path: "/import", pro: false },
+      { name: "Export", path: "/export", pro: false },
+    ],
+  },
+  {
+    icon: <WarehouseIcon />,
+    name: "Warehouse",
+    path: '/warehouse'
   },
   {
     icon: <SaleIcon />,
     name: "Sale",
-    path: "/sale",
-  },
-  {
-    icon: <ImportIcon />,
-    name: "Import",
-    path: "/import",
-  },
-  {
-    icon: <ExportIcon />,
-    name: "Export",
-    path: "/export",
+    subItems: [
+      { name: "POS", path: "/pos", pro: false },
+      { name: "Overview", path: "/sale/overview", pro: false },
+      { name: "List", path: "/sale/list", pro: false }
+    ],
   },
   {
     name: "Forms",
@@ -74,14 +80,14 @@ const navItems: NavItem[] = [
     icon: <TableIcon />,
     subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
   },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
+  // {
+  //   name: "Pages",
+  //   icon: <PageIcon />,
+  //   subItems: [
+  //     { name: "Blank Page", path: "/blank", pro: false },
+  //     { name: "404 Error", path: "/error-404", pro: false },
+  //   ],
+  // },
 ];
 
 const othersItems: NavItem[] = [
@@ -103,14 +109,6 @@ const othersItems: NavItem[] = [
       { name: "Buttons", path: "/buttons", pro: false },
       { name: "Images", path: "/images", pro: false },
       { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/sign-in", pro: false },
-      { name: "Sign Up", path: "/sign-up", pro: false },
     ],
   },
 ];

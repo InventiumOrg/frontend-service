@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
+
 export default function InventoryCreateForm() {
   const router = useRouter();
   const { isSignedIn, isLoaded, getToken } = useAuth();
@@ -59,7 +60,8 @@ export default function InventoryCreateForm() {
       createFormData.append('Category', formData.category);
       createFormData.append('Location', formData.location);
 
-      const directResponse = await fetch(`${process.env.NEXT_INVENTORY_SERVICE}/create`, {
+      //const directResponse = await fetch(`${process.env.NEXT_INVENTORY_SERVICE}/create`, {
+      const directResponse = await fetch(`http://localhost:13740/v1/inventory/create`, {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`,

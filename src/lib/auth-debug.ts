@@ -62,7 +62,7 @@ export async function debugServerAuth() {
       const clerkToken = await getToken();
       console.log('🔐 Clerk token:', clerkToken ? 'Found' : 'Not found');
     } catch (clerkError) {
-      console.log('🔐 Clerk token error:', 'Failed to retrieve');
+      console.log('🔐 Clerk token error:', `${clerkError}`);
     }
     
     console.log('🔍 === END SERVER AUTH DEBUG ===');

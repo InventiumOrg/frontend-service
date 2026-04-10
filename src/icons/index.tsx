@@ -55,6 +55,7 @@ import SaleIcon from "./sale.svg";
 import InventoryIcon from "./inventory.svg";
 import ExportIcon from "./export.svg";
 import ImportIcon from "./import.svg";
+import WarehouseIcon from "./warehouse.svg";
 
 export {
   DownloadIcon,
@@ -113,5 +114,6 @@ export {
   SaleIcon,
   InventoryIcon,
   ExportIcon,
-  ImportIcon
+  ImportIcon,
+  WarehouseIcon
 };

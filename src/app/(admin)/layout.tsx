@@ -16,7 +16,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { isSignedIn, isLoaded } = useAuth();
-  const { user } = useUser();
+  // const { user } = useUser();
   const router = useRouter();
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 

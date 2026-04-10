@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { updateInventoryItem } from '@/lib/inventory';
+import { backendServiceBaseUrl } from '@/lib/backend-url';
 // Note: Using legacy approach for testing. Consider using useInventoryClient hook.
 import '@/lib/force-env-token'; // Ensure clean token state
 import { debugTokenRetrieval } from '@/lib/debug-token';
@@ -97,7 +98,7 @@ Check console for full details`);
       console.log('🧪 Testing exact curl format:');
       console.log('Form data string:', formData.toString());
 
-      const response = await fetch('http://localhost:13740/v1/inventory/1', {
+      const response = await fetch(`${backendServiceBaseUrl('inventory')}/1`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${process.env.NEXT_PUBLIC_AUTH_TOKEN}`,
@@ -189,7 +190,8 @@ Check console for full details`);
         
         <div className="bg-blue-50 p-4 rounded-lg">
           <h3 className="font-semibold mb-2">Environment Info:</h3>
-          <p><strong>API Base URL:</strong> {process.env.NEXT_PUBLIC_API_BASE_URL}</p>
+          <p><strong>Backend API URI:</strong> {process.env.NEXT_PUBLIC_BACKEND_API_URI ?? process.env.NEXT_BACKEND_API_URI}</p>
+          <p><strong>Inventory service base:</strong> {backendServiceBaseUrl('inventory')}</p>
           <p><strong>Has Env Token:</strong> {process.env.NEXT_PUBLIC_AUTH_TOKEN ? 'Yes' : 'No'}</p>
         </div>
       </div>

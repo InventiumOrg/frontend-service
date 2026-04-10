@@ -33,7 +33,7 @@ export function setTestToken() {
       });
     }
   } catch (e) {
-    console.log('Could not decode token');
+    console.log(`Could not decode token: ${e}`);
   }
 }
 

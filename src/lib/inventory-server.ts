@@ -1,5 +1,5 @@
 import { api } from './api';
-import { InventoryItem, InventoryFilters, InventoryApiResponse, ITEMS_PER_PAGE } from './inventory';
+import { InventoryItem, InventoryFilters, ITEMS_PER_PAGE } from './inventory';
 import { getServerAuthToken } from './auth-server';
 
 // Server-side API function to fetch inventory items
